@@ -113,11 +113,11 @@ body {
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     transition: background-image 0.5s ease-in-out;
-    background-image: url('/assets/fundoclaro.png');
+    background-image: url('/assets/fundoclaro.jpeg');
 }
 
 html body.dark-mode {
-    background-image: url('/assets/fundoescuro.png') !important;
+    background-image: url('/assets/fundoescuro.jpeg') !important;
 }
 
 /* === Botão de Trocar Tema (Switch) === */
