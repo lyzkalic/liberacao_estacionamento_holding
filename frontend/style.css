@@ -1,70 +1,134 @@
- /* =======================================
-        GAVETA DE CORES - MODO CLARO
-    ======================================== */
-
+/* ============================================================
+   1. GAVETAS DE CORES (MODO CLARO - PADRÃO)
+   ============================================================ */
 :root {
-/* Cores dos textos e Leitura */
---texto-principal: #1e302b;
---texto-secundario: rgba(30, 48, 43, 0.7);
---texto-placeholder: rgba(30, 48, 43, 0.4);
+    --verde-principal: #1e302b;
+    --verde-claro: #2b453e;
+    --cinza-claro: #f5f7f6;
+    --cinza: #dbe5e1;
+    --branco: #FFFFFF;
+    --sucesso: #3CB371;
+    --erro: #D9534F;
 
-/* Fundos e Bordas */
---fundo-card: rgba(255, 255, 255, 0.45);
---fundo-painel: rgba(255, 255, 255, 0.3);
---borda-card: rgba(255, 255, 255, 0.6);
---borda-linha: rgba(30, 48, 43, 0.15);
+    /* Cores de Texto e Leitura (Modo Claro) */
+    --texto-principal: #1e302b;            /* Cor para títulos, resultados e dados */
+    --texto-secundario: rgba(30, 48, 43, 0.7); /* Cor para rótulos e sub-títulos */
+    --texto-placeholder: rgba(30, 48, 43, 0.4);/* Cor dos textos de exemplo em campos */
 
-/* Cores das Tabelas */
---tabela-linha-impar: rgba(255,255, 255, 0.18);
---tabela-linha-par: rgba(255, 255, 255, 0.4);
---tabela-linha-hover: rgba(255, 255, 255, 0.6);
+    /* Fundos e Bordas (Modo Claro) */
+    --fundo-card: rgba(255, 255, 255, 0.45);
+    --fundo-painel: rgba(255, 255, 255, 0.3);
+    --borda-card: rgba(255, 255, 255, 0.6);
+    --borda-linha: rgba(30, 48, 43, 0.15);
 
-/* Efeitos */
---vidro-blur: 12px;
---sombra: 0 20px 40px rgba(30, 48, 43, 0.1);
---sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
---raio: 16px;
+    /* Cores das Tabelas (Modo Claro) */
+    --tabela-linha-impar: rgba(255, 255, 255, 0.18);
+    --tabela-linha-par: rgba(255, 255, 255, 0.4);
+    --tabela-linha-hover: rgba(255, 255, 255, 0.6);
+
+    /* Efeitos */
+    --vidro-blur: 12px;
+    --sombra: 0 20px 40px rgba(30, 48, 43, 0.1);
+    --sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
+    --raio: 16px;
 }
 
-/* =========================================
-       GAVETA DE CORES - MODO ESCURO
-   ========================================= */
-
+/* ============================================================
+   2. GAVETAS DE CORES (MODO ESCURO)
+   ============================================================ */
 body.dark-mode {
+    /* Cores de Texto e Leitura (Modo Escuro) */
+    --texto-principal: #ffffff;             /* Textos e resultados em BRANCO */
+    --texto-secundario: rgba(255, 255, 255, 0.8); /* Rótulos em tom claro */
+    --texto-placeholder: rgba(255, 255, 255, 0.5);/* Exemplo em campos em tom claro */
 
-/* Cores dos textos e Leitura */
---texto-principal: #ffffff;  
---texto-secundario: #ffffff;
---texto-placeholder: #ffffff;
+    /* Fundos e Bordas (Modo Escuro) */
+    --fundo-card: rgba(18, 24, 22, 0.90);
+    --fundo-painel: rgba(255, 255, 255, 0.05);
+    --borda-card: rgba(255, 255, 255, 0.15);
+    --borda-linha: rgba(255, 255, 255, 0.2);
 
-/* Fundos e Bordas */
---fundo-card: rgba(18, 24, 22, 0.90);
---fundo-painel: rgba(255, 255, 255, 0.05);
---borda-card: rgba(255, 255, 255, 0.15);
---borda-linha: rgba(255, 255, 255, 0.2);
+    /* Cores das Tabelas (Modo Escuro) */
+    --tabela-linha-impar: rgba(255, 255, 255, 0.05);
+    --tabela-linha-par: rgba(255, 255, 255, 0.1);
+    --tabela-linha-hover: rgba(255, 255, 255, 0.2);
 
-/* Cores das Tabelas */
---tabela-linha-impar: rgba(255, 255, 255, 0.05);
---tabela-linha-par: rgba(255, 255, 255, 0.1);
---tabela-linha-hover: rgba(255, 255, 255, 0.2);
-
-/* Efeitos */
---vidro-blur: 12px;
---sombra: 0 20px 40px rgba(30, 0, 0, 0.5);
---sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
---raio: 16px;
+    /* Efeitos */
+    --sombra: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
-/*  Switch */
+/* === CORREÇÃO DO FEEDBACK DA BUSCA DE CPF (MODO ESCURO) === */
+
+/* Container de Sucesso (Caixa Verde) */
+body.dark-mode .feedback-sucesso {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(46, 204, 113, 0.4) !important;
+}
+
+/* Título: "Cupom encontrado!" em verde claro e vibrante */
+body.dark-mode .feedback-sucesso .feedback-titulo {
+    color: #2ecc71 !important;
+}
+
+/* Textos e Rótulos ("Cliente:", "Benefício:" e os valores dinâmicos) */
+body.dark-mode .feedback-sucesso,
+body.dark-mode .feedback-sucesso p,
+body.dark-mode .feedback-sucesso strong,
+body.dark-mode #feedbackCliente,
+body.dark-mode #feedbackBeneficio {
+    color: #ffffff !important; /* Deixa o texto 100% legível em branco */
+}
+
+/* Caso dê Erro (Mensagem Vermelha no Modo Escuro) */
+body.dark-mode .feedback-erro {
+    background-color: rgba(217, 83, 79, 0.15) !important;
+    border: 1px solid rgba(217, 83, 79, 0.4) !important;
+}
+
+body.dark-mode .feedback-erro .feedback-titulo,
+body.dark-mode #feedbackErro {
+    color: #ff6b6b !important;
+}
+
+/* ============================================================
+   3. ESTILOS GERAIS
+   ============================================================ */
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh !important;
+    display: flex !important;
+  
+    align-items: center !important;
+    gap: 28px; 
+    padding: 60px 20px 60px;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    position: relative !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    transition: background-image 0.5s ease-in-out;
+    background-image: url('/assets/fundoclaro.png');
+}
+
+html body.dark-mode {
+    background-image: url('/assets/fundoescuro.png') !important;
+}
+
+/* === Botão de Trocar Tema (Switch) === */
 .switch-container {
-     position: fixed !important;
-    top: 20px !important;
-    left: 20px !important;
-    right: auto !important;
-    z-index: 999999 !important;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
     width: 90px;
     height: 46px;
-    background-color: #1e302b; 
+    background-color: var(--verde-principal);
     border-radius: 30px;
     cursor: pointer;
     display: flex;
@@ -72,7 +136,7 @@ body.dark-mode {
     justify-content: space-between;
     padding: 0 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
+}
 
 .switch-icon {
     width: 22px;
@@ -82,7 +146,7 @@ body.dark-mode {
     justify-content: center;
     z-index: 2;
     pointer-events: none;
-    }
+}
 
 .switch-thumb {
     position: absolute;
@@ -90,8 +154,413 @@ body.dark-mode {
     left: 4px;
     width: 38px;
     height: 38px;
-    background-color: rgba(255, 255, 255, 0.25); 
+    background-color: rgba(255, 255, 255, 0.25);
     border-radius: 50%;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .switch-thumb {
+    transform: translateX(44px);
+}
+
+.page-logo-corner {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.page-logo-corner img {
+    display: block;
+    width: 130px;
+    max-width: 30vw;
+    height: auto;
+    filter: drop-shadow(0 6px 14px rgba(30, 48, 43, 0.25));
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px 16px;
+}
+
+/* === Cards === */
+.login-card, .card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--fundo-card) !important;
+    border-radius: var(--raio);
+    box-shadow: var(--sombra) !important;
+    backdrop-filter: blur(var(--vidro-blur));
+    -webkit-backdrop-filter: blur(var(--vidro-blur));
+    border: 1px solid var(--borda-card) !important;
+    padding: 40px 36px;
+    animation: cardEntrada 0.45s ease;
+    margin: 0 auto;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.card-wide {
+    max-width: 1000px;
+}
+
+@keyframes cardEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.card-header h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--texto-principal);
+    margin: 0 0 4px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--texto-secundario);
+    margin: 0;
+}
+
+/* === Formulários e Campos de Texto === */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form label, .filtros label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--texto-secundario);
+    margin-bottom: 8px;
+}
+
+.form input, .filtros input {
+    width: 100%;
+    padding: 12px 4px;
+    font-size: 1.05rem;
+    letter-spacing: 0.3px;
+    border: none;
+    border-bottom: 2px solid var(--borda-linha);
+    border-radius: 0;
+    background: transparent;
+    color: var(--texto-principal);
+    outline: none;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 24px;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.form input::placeholder, .filtros input::placeholder {
+    color: var(--texto-placeholder);
+    font-weight: 400;
+}
+
+.form input:focus, .filtros input:focus {
+    border-bottom-color: var(--verde-principal);
+    box-shadow: none;
+    background: transparent;
+}
+
+/* === Botões === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: var(--sombra-hover);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--verde-principal);
+    color: var(--branco);
+}
+
+.btn-primary:hover {
+    background: var(--verde-claro);
+    box-shadow: var(--sombra-hover);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    background: var(--verde-principal);
+    color: var(--branco);
+    margin-top: 18px;
+}
+
+.btn-secondary:hover {
+    background: var(--verde-claro);
+    box-shadow: var(--sombra-hover);
+}
+
+/* === Painel de Dados do Cliente e Área de Resultados === */
+.dadosCliente {
+    background: var(--fundo-painel);
+    border: 1px solid var(--borda-linha);
+    border-radius: var(--raio);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+}
+
+.dado-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.dado-item + .dado-item {
+    border-top: 1px solid var(--borda-linha);
+}
+
+.dado-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--texto-secundario);
+}
+
+.dado-valor {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    text-align: right;
+}
+
+/* Área onde os resultados dinâmicos são inseridos */
+.resultado {
+    color: var(--texto-principal);
+}
+
+.resultado:empty {
+    display: none;
+}
+
+/* === Feedback (Sucesso / Erro) === */
+.feedback {
+    margin-top: 24px;
+    padding: 22px 20px;
+    border-radius: var(--raio);
+    text-align: center;
+    animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-icon {
+    display: block;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.feedback-titulo {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.feedback p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+    color: var(--texto-principal);
+}
+
+.feedback-sucesso {
+    background: rgba(60, 179, 113, 0.12);
+    border: 1px solid rgba(60, 179, 113, 0.35);
+}
+
+.feedback-sucesso .feedback-titulo {
+    color: var(--sucesso);
+}
+
+.feedback-erro {
+    background: rgba(217, 83, 79, 0.12);
+    border: 1px solid rgba(217, 83, 79, 0.35);
+}
+
+.feedback-erro .feedback-titulo {
+    color: var(--erro);
+}
+
+/* === Ações do Topo / Navegação === */
+.acoes-topo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.acoes-topo a
+.acoes-topo button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background: var(--fundo-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--borda-card);
+    color: var(--texto-principal);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--sombra-hover);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    cursor: pointer ;
+    font-family: inherit;
+}
+
+.acoes-topo a:hover,
+.acoes-topo button:hover {
+    background: var(--tabela-linha-hover);
+}
+
+.acoes-topo a:active,
+.acoes-topo button:active {
+            transform: scale(0.98);
+        }
+
+.acoes-topo .link-aud:hover{
+      background: rgba(223, 223, 223, 0.55) ;
+}
+
+.acoes-topo .link-sair {
+    background: rgba(217, 83, 79, 0.55) !important;
+    color: var(--branco) !important;
+    border-color: rgba(217, 83, 79, 0.6) !important;
+}
+
+.acoes-topo .link-sair:hover {
+    background: rgba(201, 72, 66, 0.75) !important;
+}
+
+/* === Tabelas === */
+.tabela-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-auditoria {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.tabela-auditoria th,
+.tabela-auditoria td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--borda-linha);
+    color: var(--texto-principal);
+    white-space: nowrap;
+}
+
+.tabela-auditoria th {
+    color: var(--texto-principal);
+    font-weight: 700;
+    background: var(--fundo-painel);
+}
+
+.tabela-auditoria tbody tr:nth-child(odd) {
+    background: var(--tabela-linha-impar);
+}
+
+.tabela-auditoria tbody tr:nth-child(even) {
+    background: var(--tabela-linha-par);
+}
+
+.tabela-auditoria tbody tr:hover {
+    background: var(--tabela-linha-hover);
+}
+
+/* === Filtros === */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    margin-bottom: 20px;
+}
+
+.filtros .campo-filtro {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+}
+
+.filtros-botoes {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.filtros-botoes .btn {
+    width: auto;
+    padding: 12px 24px;
+    margin-top: 0;
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 32px 22px;
+    }
+
+    .card-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .form input {
+        font-size: 1rem;
+    }
+}
