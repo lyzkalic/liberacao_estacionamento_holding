@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        /* === CONFIGURAÇÃO DO FUNDO PADRÃO === */
+        body {
+            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            background-color: #ffffff !important;
+            background-image: url('assets/fundoclaro.jpeg') !important; 
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+            transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        }
+
+        body.dark-mode {
+            background-color: #121212 !important;
+            background-image: url('/assets/fundoescuro.jpeg') !important;
+        }
+
+        /* === POSICIONAMENTO DO SWITCH === */
+        .switch-container {
+            position: fixed !important;
+            top: 20px !important;
+            left: 20px !important;
+            right: auto !important;
+            z-index: 999999 !important;
+            width: 90px;
+            height: 46px;
+            background-color: #1e302b; 
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .switch-icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .switch-thumb {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 38px;
+            height: 38px;
+            background-color: rgba(255, 255, 255, 0.25); 
+            border-radius: 50%;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-mode .switch-thumb {
+            transform: translateX(44px) !important;
+        }
+
+        /* === Elementos da Página === */
+        .page-logo {
+            position: relative;
+            z-index: 9999;
+        }
+
+        .page-logo img {
+            display: block;
+            width: 230px;
+            max-width: 60vw;
+            height: auto;
+            filter: drop-shadow(0 6px 14px rgba(30, 48, 43, 0.25));
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.70);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(30, 48, 43, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 28px 40px 38px;
+            width: 400px;
+            max-width: 90%;
+            position: relative; 
+            z-index: 9999; 
+            text-align: center;
+            color: #1e302b; 
+            animation: fadeInCard 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+            color: #1e302b;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #1e302b;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 40px 12px 0; 
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(30, 48, 43, 0.2); 
+            color: #1e302b;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-weight: 500;
+        }
+
+        .input-wrapper input:focus {
+            border-bottom-color: #1e302b; 
+        }
+
+        .input-wrapper input::placeholder {
+            color: rgba(30, 48, 43, 0.35);
+            font-weight: 400;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(30, 48, 43, 0.5);
+            font-size: 18px;
+        }
+
+        .toggle-senha {
+            display: none;
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            color: rgba(30, 48, 43, 0.5);
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .toggle-senha:hover {
+            color: #1e302b;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background-color: #7fc1aa; 
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 15px rgba(30, 48, 43, 0.2);
+        }
+
+        .btn-login:hover {
+            background-color: #6aa18e; 
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .card-footer {
+            margin-top: 18px;
+            font-size: 12px;
+            font-weight: 400;
+            color: rgba(30, 48, 43, 0.6);
+        }
+
+        .card-footer a {
+            color: #1e302b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .card-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInCard {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .resultado:empty {
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeInCard 0.35s ease;
+        }
+
+        .feedback-titulo {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .feedback-erro {
+            background: rgba(217, 83, 79, 0.12);
+            border: 1px solid rgba(217, 83, 79, 0.35);
+        }
+
+        .feedback-erro .feedback-titulo {
+            color: #b3261e;
+        }
+
+        /* === Modal "Esqueci a senha" === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 48, 43, 0.55);
+            z-index: 100000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(30, 48, 43, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 32px;
+            width: 340px;
+            max-width: 100%;
+            text-align: center;
+            color: #1e302b;
+            animation: fadeInCard 0.3s ease-out;
+        }
+
+        .modal-box h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: rgba(30, 48, 43, 0.75);
+            margin-bottom: 22px;
+            line-height: 1.4;
+        }
+
+        .modal-box .btn-login {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        /* === MODO ESCURO === */
+        body.dark-mode .login-card {
+            background: rgba(18, 24, 22, 0.90) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode label {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode input {
+            color: #ffffff !important;
+            border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        body.dark-mode input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        body.dark-mode .card-footer,
+        body.dark-mode .card-footer a {
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BOTÃO SWITCH COM OS ÍCONES -->
+    <div class="switch-container" id="toggle-theme" role="button" aria-label="Alternar tema">
+        <div class="switch-thumb"></div>
+        
+        <!-- Sol -->
+        <div class="switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </div>
+        
+        <!-- Lua -->
+        <div class="switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="page-logo">
+        <img src="assets/logo-topo.jpeg" alt="Sá Cavalcante">
+    </div>
+
+    <div class="login-card">
+        <h1>Login</h1>
+        <form id="formLogin" autocomplete="off">
+            <div class="input-group">
+                <label for="usuario">Usuário</label>
+                <div class="input-wrapper">
+                    <input type="text" id="usuario" placeholder="Digite seu usuário" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="senha" placeholder="Digite sua senha" required>
+                    <i class="fa-solid fa-lock" id="iconeCadeado"></i>
+                    <button type="button" class="toggle-senha" id="toggleSenha" aria-label="Mostrar senha">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+
+        <div id="mensagem" class="resultado" aria-live="polite"></div>
+
+        <div class="card-footer">
+            <a href="#" id="esqueciSenha">Esqueci minha senha</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalEsqueciSenha">
+        <div class="modal-box" style="width: 500px;">
+            <h2>Esqueceu sua senha?</h2>
+            <p>Entre em contato com o administrador do sistema para redefinir sua senha.</p>
+            <button type="button" class="btn-login" id="fecharModalEsqueciSenha">Entendi</button>
+        </div>
+    </div>
+
+    <script src="/js/login.js?v=4"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const botaoFundo = document.getElementById('toggle-theme');
+        
+        const temaSalvo = localStorage.getItem('theme');
+        if (temaSalvo === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+
+        if (botaoFundo) {
+            botaoFundo.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        }
+
+        const toggleSenha = document.getElementById('toggleSenha');
+        const campoSenha = document.getElementById('senha');
+        const iconeCadeado = document.getElementById('iconeCadeado');
+        
+        if (toggleSenha && campoSenha) {
+            const iconeSenha = toggleSenha.querySelector('i');
+
+            campoSenha.addEventListener('input', function() {
+                const temTexto = campoSenha.value.length > 0;
+                if (iconeCadeado) iconeCadeado.style.display = temTexto ? 'none' : '';
+                toggleSenha.style.display = temTexto ? 'inline-flex' : 'none';
+
+                if (!temTexto) {
+                    campoSenha.type = 'password';
+                    if (iconeSenha) {
+                        iconeSenha.classList.remove('fa-eye-slash');
+                        iconeSenha.classList.add('fa-eye');
+                    }
+                    toggleSenha.setAttribute('aria-label', 'Mostrar senha');
+                }
+            });
+
+            toggleSenha.addEventListener('click', function() {
+                const mostrando = campoSenha.type === 'text';
+                campoSenha.type = mostrando ? 'password' : 'text';
+                if (iconeSenha) {
+                    iconeSenha.classList.toggle('fa-eye');
+                    iconeSenha.classList.toggle('fa-eye-slash');
+                }
+                toggleSenha.setAttribute('aria-label', mostrando ? 'Mostrar senha' : 'Ocultar senha');
+            });
+        }
+
+        const linkEsqueciSenha = document.getElementById('esqueciSenha');
+        const modalEsqueciSenha = document.getElementById('modalEsqueciSenha');
+        const fecharModalEsqueciSenha = document.getElementById('fecharModalEsqueciSenha');
+
+        if (linkEsqueciSenha && modalEsqueciSenha && fecharModalEsqueciSenha) {
+            linkEsqueciSenha.addEventListener('click', function(event) {
+                event.preventDefault();
+                modalEsqueciSenha.classList.add('active');
+            });
+
+            fecharModalEsqueciSenha.addEventListener('click', function() {
+                modalEsqueciSenha.classList.remove('active');
+            });
+
+            modalEsqueciSenha.addEventListener('click', function(event) {
+                if (event.target === modalEsqueciSenha) {
+                    modalEsqueciSenha.classList.remove('active');
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>

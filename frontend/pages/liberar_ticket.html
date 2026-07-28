@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Liberar Ticket</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=7">
+
+    <style>
+        html, body {
+            height: 100vh !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 18px !important;
+            padding: 20px !important;
+            overflow: hidden !important;
+            position: relative !important;
+            background: #ffffff url('assets/fundoclaro.jpeg') no-repeat center center fixed !important;
+            background-size: cover !important;
+            transition: background 0.4s ease-in-out !important;
+        }
+
+        /* === MODO ESCURO ABSOLUTO === */
+        html.dark-mode, 
+        body.dark-mode {
+            background: #121212 url('assets/fundoescuro.jpeg') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        main.page, .page {
+            background: transparent !important;
+        }
+
+        /* === CORREÇÃO DO BOTÃO SWITCH === */
+        #toggle-theme.switch-container {
+            position: fixed !important;
+            top: 20px !important;
+            left: 20px !important;
+            right: auto !important;
+            z-index: 999999 !important;
+            display: flex !important;
+            pointer-events: auto !important;
+        }
+
+        /* === BOTÕES SUPERIORES === */
+        .acoes-topo {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 10px !important;
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            z-index: 99999 !important;
+        }
+
+        .acoes-topo a,
+        .acoes-topo button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #1e302b;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 8px 15px rgba(30, 48, 43, 0.15);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .acoes-topo a:hover,
+        .acoes-topo button:hover {
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .acoes-topo a:active,
+        .acoes-topo button:active {
+            transform: scale(0.98);
+        }
+
+        .acoes-topo .link-sair {
+            background: rgba(217, 83, 79, 0.55) !important;
+            color: #ffffff !important;
+            border-color: rgba(217, 83, 79, 0.6) !important;
+        }
+
+        .acoes-topo .link-sair:hover {
+            background: rgba(201, 72, 66, 0.75) !important;
+        }
+
+        body.dark-mode .acoes-topo a,
+        body.dark-mode .acoes-topo button {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode .acoes-topo a:hover,
+        body.dark-mode .acoes-topo button:hover {
+            background: rgba(255, 255, 255, 0.35) !important;
+        }
+
+        body.dark-mode .acoes-topo .link-sair {
+            background: #e0524d !important;
+            color: #ffffff !important;
+        }
+
+        /* === CARD E ELEMENTOS INTERNOS === */
+        .login-card {
+            width: 400px !important;
+            max-width: 90% !important;
+            padding: 35px 40px !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06) !important;
+            z-index: 10;
+        }
+
+        body.dark-mode .login-card {
+            background: rgba(18, 24, 22, 0.90) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        body.dark-mode .login-card h1,
+        body.dark-mode .login-card label,
+        body.dark-mode .dado-label,
+        body.dark-mode .dado-valor {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .form input {
+            color: #ffffff !important;
+            border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        body.dark-mode .dadosCliente {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode .switch-thumb {
+            transform: translateX(44px) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BOTÃO SWITCH -->
+    <div class="switch-container" id="toggle-theme" role="button" aria-label="Alternar tema">
+        <div class="switch-thumb"></div>
+
+        <!-- Sol -->
+        <div class="switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </div>
+
+        <!-- Lua -->
+        <div class="switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- BOTÕES DE AÇÃO SUPERIORES -->
+    <div class="acoes-topo">
+        <a href="/auditoria" class="link-auditoria">Auditoria</a>
+        <a href="/logout" class="link-sair">Sair</a>
+    </div>
+
+    <main class="page">
+        <div class="page-logo-corner">
+            <img src="/assets/logo-topo.jpeg" alt="Sá Cavalcante">
+        </div>
+
+        <!-- CARD CENTRALIZADO -->
+        <div class="login-card">
+            <div class="card-header">
+                <h1>Confirmar Liberação</h1>
+            </div>
+
+            <div class="dadosCliente">
+                <div class="dado-item">
+                    <span class="dado-label">
+                        <svg class="dado-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+                        Cliente
+                    </span>
+                    <span id="nomeCliente" class="dado-valor"></span>
+                </div>
+
+                <div class="dado-item">
+                    <span class="dado-label">
+                        <svg class="dado-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z"/><line x1="10" y1="7" x2="10" y2="17" stroke-dasharray="2 2"/></svg>
+                        Benefício
+                    </span>
+                    <span id="beneficio" class="dado-valor"></span>
+                </div>
+            </div>
+
+            <form id="formTicket" class="form">
+                <label for="ticket">Número do Ticket</label>
+                <input type="text" id="ticket" placeholder="Digite o número do ticket" required>
+                <button type="submit" class="btn btn-primary">
+                    Liberar Estacionamento
+                </button>
+            </form>
+
+            <div id="mensagem" class="resultado" aria-live="polite"></div>
+        </div>
+    </main>
+
+    <script src="/js/liberar_ticket.js?v=3"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const botaoFundo = document.getElementById('toggle-theme');
+        const temaSalvo = localStorage.getItem('theme');
+        
+        if (temaSalvo === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+        }
+
+        if (botaoFundo) {
+            botaoFundo.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.documentElement.classList.toggle('dark-mode');
+                const mudouParaEscuro = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', mudouParaEscuro ? 'dark' : 'light');
+            });
+        }
+    });
+    </script>
+</body>
+</html>

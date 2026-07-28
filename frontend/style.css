@@ -1,0 +1,97 @@
+ /* =======================================
+        GAVETA DE CORES - MODO CLARO
+    ======================================== */
+
+:root {
+/* Cores dos textos e Leitura */
+--texto-principal: #1e302b;
+--texto-secundario: rgba(30, 48, 43, 0.7);
+--texto-placeholder: rgba(30, 48, 43, 0.4);
+
+/* Fundos e Bordas */
+--fundo-card: rgba(255, 255, 255, 0.45);
+--fundo-painel: rgba(255, 255, 255, 0.3);
+--borda-card: rgba(255, 255, 255, 0.6);
+--borda-linha: rgba(30, 48, 43, 0.15);
+
+/* Cores das Tabelas */
+--tabela-linha-impar: rgba(255,255, 255, 0.18);
+--tabela-linha-par: rgba(255, 255, 255, 0.4);
+--tabela-linha-hover: rgba(255, 255, 255, 0.6);
+
+/* Efeitos */
+--vidro-blur: 12px;
+--sombra: 0 20px 40px rgba(30, 48, 43, 0.1);
+--sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
+--raio: 16px;
+}
+
+/* =========================================
+       GAVETA DE CORES - MODO ESCURO
+   ========================================= */
+
+body.dark-mode {
+
+/* Cores dos textos e Leitura */
+--texto-principal: #ffffff;  
+--texto-secundario: #ffffff;
+--texto-placeholder: #ffffff;
+
+/* Fundos e Bordas */
+--fundo-card: rgba(18, 24, 22, 0.90);
+--fundo-painel: rgba(255, 255, 255, 0.05);
+--borda-card: rgba(255, 255, 255, 0.15);
+--borda-linha: rgba(255, 255, 255, 0.2);
+
+/* Cores das Tabelas */
+--tabela-linha-impar: rgba(255, 255, 255, 0.05);
+--tabela-linha-par: rgba(255, 255, 255, 0.1);
+--tabela-linha-hover: rgba(255, 255, 255, 0.2);
+
+/* Efeitos */
+--vidro-blur: 12px;
+--sombra: 0 20px 40px rgba(30, 0, 0, 0.5);
+--sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
+--raio: 16px;
+}
+
+/*  Switch */
+.switch-container {
+     position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    right: auto !important;
+    z-index: 999999 !important;
+    width: 90px;
+    height: 46px;
+    background-color: #1e302b; 
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+.switch-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+    }
+
+.switch-thumb {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 38px;
+    height: 38px;
+    background-color: rgba(255, 255, 255, 0.25); 
+    border-radius: 50%;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }

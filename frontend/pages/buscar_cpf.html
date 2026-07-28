@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Cliente</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=2">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+            padding: 60px 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+            background-image: url('assets/fundoclaro.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            z-index: 1;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        body.dark-mode {
+            background-image: url('assets/fundoescuro.jpeg');
+        }
+
+        /* === SWITCH DE TEMA === */
+        .switch-container {
+            position: fixed !important;
+            top: 20px;
+            left: 20px;
+            z-index: 99999;
+            width: 90px;
+            height: 46px;
+            background-color: #1e302b;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .switch-icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .switch-thumb {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 38px;
+            height: 38px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-mode .switch-thumb {
+            transform: translateX(44px);
+        }
+
+        /* === BOTÕES SUPERIORES === */
+        .acoes-topo {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 10px !important;
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            z-index: 99999 !important;
+        }
+
+        .acoes-topo a,
+        .acoes-topo button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #1e302b;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 8px 15px rgba(30, 48, 43, 0.15);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .acoes-topo a:hover,
+        .acoes-topo button:hover {
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .acoes-topo a:active,
+        .acoes-topo button:active {
+            transform: scale(0.98);
+        }
+
+        .acoes-topo .link-sair {
+            background: rgba(217, 83, 79, 0.55) !important;
+            color: #ffffff !important;
+            border-color: rgba(217, 83, 79, 0.6) !important;
+        }
+
+        .acoes-topo .link-sair:hover {
+            background: rgba(201, 72, 66, 0.75) !important;
+        }
+
+        body.dark-mode .acoes-topo a,
+        body.dark-mode .acoes-topo button {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode .acoes-topo a:hover,
+        body.dark-mode .acoes-topo button:hover {
+            background: rgba(255, 255, 255, 0.35) !important;
+        }
+
+        body.dark-mode .acoes-topo .link-sair {
+            background: #e0524d !important;
+            color: #ffffff !important;
+        }
+
+        /* === LOGO === */
+        .page-logo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .page-logo img {
+            display: block;
+            width: 130px;
+            max-width: 30vw;
+            height: auto;
+            filter: drop-shadow(0 6px 14px rgba(30, 48, 43, 0.25));
+        }
+
+        /* === CARD CENTRAL === */
+        .login-card {
+            background: rgba(255, 255, 255, 0.70);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(30, 48, 43, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 50px 40px;
+            width: 400px;
+            max-width: 90%;
+            position: relative;
+            text-align: center;
+            color: #1e302b;
+            animation: fadeInCard 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #1e302b;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(30, 48, 43, 0.7);
+            margin-top: 8px;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: rgba(30, 48, 43, 0.8);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 40px 12px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(30, 48, 43, 0.2);
+            color: #1e302b;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-weight: 500;
+        }
+
+        .input-wrapper input:focus {
+            border-bottom-color: #1e302b;
+        }
+
+        .input-wrapper input::placeholder {
+            color: rgba(30, 48, 43, 0.35);
+            font-weight: 400;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(30, 48, 43, 0.5);
+            font-size: 18px;
+        }
+
+        .btn-login {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 15px;
+            background-color: #1e302b;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 15px rgba(30, 48, 43, 0.2);
+        }
+
+        .btn-login:hover {
+            background-color: #2b453e;
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes fadeInCard {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .resultado:empty {
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: left;
+            animation: fadeInCard 0.35s ease;
+        }
+
+        .feedback-titulo {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 0 8px;
+            text-align: center;
+        }
+
+        .feedback p {
+            margin: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .feedback-erro {
+            background: rgba(217, 83, 79, 0.12);
+            border: 1px solid rgba(217, 83, 79, 0.35);
+        }
+
+        .feedback-erro .feedback-titulo {
+            color: #b3261e;
+        }
+
+        /* === MODO ESCURO === */
+        body.dark-mode .login-card {
+            background: rgba(18, 24, 22, 0.90) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode label,
+        body.dark-mode .subtitle {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode input {
+            color: #ffffff !important;
+            border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        body.dark-mode input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BOTÃO SWITCH COM OS ÍCONES -->
+    <div class="switch-container" id="toggle-theme" role="button" aria-label="Alternar tema">
+        <div class="switch-thumb"></div>
+
+        <!-- Sol -->
+        <div class="switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </div>
+
+        <!-- Lua -->
+        <div class="switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div class="acoes-topo">
+        {% if perfil == "ADMIN" %}
+        <a href="/auditoria" class="link-aud">Auditoria</a>
+        {% endif %}
+        <a href="/logout" class="link-sair">Sair</a>
+    </div>
+
+    <div class="page-logo">
+        <img src="/assets/logo-topo.jpeg" alt="Sá Cavalcante">
+    </div>
+
+    <div class="login-card">
+
+        {% if erro %}
+        <div class="feedback feedback-erro">
+            <p class="feedback-titulo">{{ erro }}</p>
+        </div>
+        {% endif %}
+
+        <h1>Pesquisa de CPF</h1>
+        <p class="subtitle">Digite o CPF do cliente para buscar cupons resgatados</p>
+
+        <form id="formCpf" autocomplete="off">
+
+            <div class="input-group">
+                <label for="cpf">CPF do Cliente</label>
+                <div class="input-wrapper">
+                    <input type="text" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14"
+                        required>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">Buscar CPF</button>
+
+        </form>
+
+        <div id="mensagem" class="resultado" aria-live="polite"></div>
+
+    </div>
+
+    <script src="/js/buscar_cpf.js?v=3"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const botaoFundo = document.getElementById('toggle-theme');
+
+            const temaSalvo = localStorage.getItem('theme');
+            if (temaSalvo === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+
+            if (botaoFundo) {
+                botaoFundo.addEventListener('click', function () {
+                    document.body.classList.toggle('dark-mode');
+
+                    if (document.body.classList.contains('dark-mode')) {
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        localStorage.setItem('theme', 'light');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
