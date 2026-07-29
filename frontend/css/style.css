@@ -113,11 +113,11 @@ body {
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     transition: background-image 0.5s ease-in-out;
-    background-image: url('/assets/fundoclaro.jpeg');
+    background-image: url('/assets/fundoclaro.png');
 }
 
 html body.dark-mode {
-    background-image: url('/assets/fundoescuro.jpeg') !important;
+    background-image: url('/assets/fundoescuro.png') !important;
 }
 
 /* === Botão de Trocar Tema (Switch) === */
@@ -164,6 +164,17 @@ body.dark-mode .switch-thumb {
     transform: translateX(44px);
 }
 
+.page-logo {
+    display:flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.page-logo img{
+    width: 180px;
+    height: auto;
+}
+
 .page-logo-corner {
     position: fixed;
     bottom: 20px;
@@ -173,7 +184,7 @@ body.dark-mode .switch-thumb {
 
 .page-logo-corner img {
     display: block;
-    width: 130px;
+    width: 150px;
     max-width: 30vw;
     height: auto;
     filter: drop-shadow(0 6px 14px rgba(30, 48, 43, 0.25));
