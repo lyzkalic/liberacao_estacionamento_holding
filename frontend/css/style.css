@@ -165,14 +165,20 @@ body.dark-mode .switch-thumb {
 }
 
 .page-logo {
-    display:flex;
+    display: flex;
     justify-content: center;
     margin-bottom: 24px;
+    position: relative;
+    z-index: 9999;
 }
 
-.page-logo img{
-    width: 180px;
+.page-logo img {
+    display: block;
+    width: 800px;      
+    max-width: 150vw;
     height: auto;
+    filter: drop-shadow(0 6px 14px rgba(30,48,43,.25));
+    margin-bottom: -150px;
 }
 
 .page-logo-corner {
@@ -187,19 +193,7 @@ body.dark-mode .switch-thumb {
     width: 150px;
     max-width: 30vw;
     height: auto;
-    filter: drop-shadow(0 6px 14px rgba(30, 48, 43, 0.25));
-}
-
-.page {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 40px 16px;
+    filter: drop-shadow(0 6px 14px rgba(30,48,43,.25));
 }
 
 /* === Cards === */
