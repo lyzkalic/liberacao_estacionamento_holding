@@ -1,8 +1,5 @@
 import requests
 
-from backend.config import settings
-
-
 class CupomRepository:
 
     def __init__(self):
