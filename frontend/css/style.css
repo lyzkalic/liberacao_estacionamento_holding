@@ -1,7 +1,7 @@
 /* ============================================================
    1. GAVETAS DE CORES (MODO CLARO - PADRÃO)
    ============================================================ */
-:root {
+:root { /* definição do seletor, cria variáveis globais no nível mais alto do código, mudar a cor no root atualiza no site todo de uma vez */
     --verde-principal: #1e302b;
     --verde-claro: #2b453e;
     --cinza-claro: #f5f7f6;
@@ -30,25 +30,25 @@
     --vidro-blur: 12px;
     --sombra: 0 20px 40px rgba(30, 48, 43, 0.1);
     --sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
-    --raio: 16px;
+    --raio: 16px;  /* arredondamento das bordas */
 }
 
 /* ============================================================
    2. GAVETAS DE CORES (MODO ESCURO)
    ============================================================ */
 body.dark-mode {
-    /* Cores de Texto e Leitura (Modo Escuro) */
-    --texto-principal: #ffffff;             /* Textos e resultados em BRANCO */
+    /* Cores de Texto e Leitura - Modo Escuro */
+    --texto-principal: #ffffff;                   /* Textos e resultados  */
     --texto-secundario: rgba(255, 255, 255, 0.8); /* Rótulos em tom claro */
     --texto-placeholder: rgba(255, 255, 255, 0.5);/* Exemplo em campos em tom claro */
 
-    /* Fundos e Bordas (Modo Escuro) */
+    /* Fundos e Bordas - Modo Escuro */
     --fundo-card: rgba(18, 24, 22, 0.90);
     --fundo-painel: rgba(255, 255, 255, 0.05);
     --borda-card: rgba(255, 255, 255, 0.15);
     --borda-linha: rgba(255, 255, 255, 0.2);
 
-    /* Cores das Tabelas (Modo Escuro) */
+    /* Cores das Tabelas - Modo Escuro */
     --tabela-linha-impar: rgba(255, 255, 255, 0.05);
     --tabela-linha-par: rgba(255, 255, 255, 0.1);
     --tabela-linha-hover: rgba(255, 255, 255, 0.2);
@@ -56,8 +56,6 @@ body.dark-mode {
     /* Efeitos */
     --sombra: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
-
-/* === CORREÇÃO DO FEEDBACK DA BUSCA DE CPF (MODO ESCURO) === */
 
 /* Container de Sucesso (Caixa Verde) */
 body.dark-mode .feedback-sucesso {
@@ -113,11 +111,11 @@ body {
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     transition: background-image 0.5s ease-in-out;
-    background-image: url('/assets/fundoclaro.jpeg');
+    background-image: url('/assets/fundoclaro.svg');
 }
 
 html body.dark-mode {
-    background-image: url('/assets/fundoescuro.jpeg') !important;
+    background-image: url('/assets/fundoescuro.svg') !important;
 }
 
 /* === Botão de Trocar Tema (Switch) === */
@@ -164,6 +162,23 @@ body.dark-mode .switch-thumb {
     transform: translateX(44px);
 }
 
+.page-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 9999;
+}
+
+.page-logo img {
+    display: block;
+    width: 250px;      
+    max-width: 100vw;
+    height: auto;
+    filter: drop-shadow(0 6px 14px rgba(30,48,43,.25));
+    margin-bottom: -20px;
+}
+
 .page-logo-corner {
     position: fixed;
     bottom: 20px;
@@ -173,22 +188,10 @@ body.dark-mode .switch-thumb {
 
 .page-logo-corner img {
     display: block;
-    width: 130px;
+    width: 150px;
     max-width: 30vw;
     height: auto;
-    filter: drop-shadow(0 6px 14px rgba(30, 48, 43, 0.25));
-}
-
-.page {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 40px 16px;
+    filter: drop-shadow(0 6px 14px rgba(30,48,43,.25));
 }
 
 /* === Cards === */

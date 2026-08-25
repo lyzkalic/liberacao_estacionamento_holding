@@ -1,102 +1,76 @@
-import psycopg2.extras
-
-from backend.database import conectar
-
+import requests
 
 class CupomRepository:
 
     CUPOM_ID = "150e6802-54e3-49a5-b2eb-a1357327e10c"
 
-    def buscar_cupom(self, cpf):
+    def __init__(self):
+        self.base_url = (
+            "https://conectahub-internal.sacavalcante.com.br"
+            "/api/v1/liberação-de-estacionamento"
+        )
 
-        conexao = conectar()
+    def buscar_cupom(self, document):
+        """
+        GET
+        Busca um cupom de isenção de estacionamento
+        pelo documento do cliente.
+        """
 
-        try:
+        url = f"{self.base_url}/buscar-cupom"
 
-            cursor = conexao.cursor(
-                cursor_factory=psycopg2.extras.RealDictCursor
-            )
+        response = requests.get(
+            url,
+            params={
+                "document": document
+            },
+            timeout=10
+        )
 
-            sql = """
-                SELECT
-                    c.name AS cliente_nome,
-                    u.id AS user_id,
-                    rc.id AS redeem_coupon_id,
-                    rc.code,
-                    rc.coupon_id,
-                    rc.has_used,
-                    cp.title AS beneficio,
-                    cp.description AS descricao_beneficio
-                FROM customer c
-                INNER JOIN users u
-                    ON u.customer_id = c.id
-                INNER JOIN redeem_coupons rc
-                    ON rc.user_id = u.id
-                INNER JOIN coupon cp
-                    ON cp.id = rc.coupon_id
-                WHERE c.document = %s
-                  AND rc.coupon_id = %s
-                  AND rc.has_used = false;
-            """
+        response.raise_for_status()
 
-            cursor.execute(
-                sql,
-                (
-                    cpf,
-                    self.CUPOM_ID
-                )
-            )
+        return response.json()
 
-            resultado = cursor.fetchone()
+    def atualizar_cupom_utilizado(
+        self,
+        redeem_coupon_id,
+        user_id
+    ):
+        """
+        PATCH
+        Marca o cupom como utilizado.
+        """
 
-            return resultado
+        url = f"{self.base_url}/marca-cupomusado"
 
-        finally:
+        payload = {
+            "redeem_coupon_id": redeem_coupon_id,
+            "user_id": user_id
+        }
 
-            cursor.close()
-            conexao.close()
+        response = requests.patch(
+            url,
+            json=payload,
+            timeout=10
+        )
+
+        response.raise_for_status()
+
+        return response.json()
 
     def obter_proximo_id_transacao(self):
+        """
+        GET
+        Obtém o próximo ID de transação.
+        """
 
-        conexao = conectar()
+        url = f"{self.base_url}/obter-próximo-id-transação"
 
-        try:
+        response = requests.get(
+            url,
+            timeout=10
+        )
 
-            cursor = conexao.cursor()
+        response.raise_for_status()
 
-            cursor.execute(
-                "SELECT nextval('wps_id_transacao_seq');"
-            )
-
-            resultado = cursor.fetchone()
-
-            return resultado[0]
-
-        finally:
-
-            cursor.close()
-            conexao.close()
-
-    def atualizar_cupom_utilizado(self, redeem_coupon_id, user_id):
-
-        conexao = conectar()
-
-        try:
-
-            cursor = conexao.cursor()
-
-            sql = """
-                UPDATE redeem_coupons
-                SET has_used = true
-                WHERE id = %s
-                  AND user_id = %s;
-            """
-
-            cursor.execute(sql, (redeem_coupon_id, user_id))
-
-            conexao.commit()
-
-        finally:
-
-            cursor.close()
-            conexao.close()
+        return response.json()

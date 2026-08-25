@@ -25,7 +25,6 @@ app = FastAPI(
 
 )
 
-
 app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET)
 
 
