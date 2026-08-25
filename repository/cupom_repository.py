@@ -2,8 +2,13 @@ import requests
 
 class CupomRepository:
 
-    CUPOM_ID = "150e6802-54e3-49a5-b2eb-a1357327e10c"
+    def __init__(self):
+        self.base_url = (
+            "https://conectahub-internal.sacavalcante.com.br"
+            "/api/v1/liberação-de-estacionamento"
+        )
 
+<<<<<<< HEAD
     def __init__(self):
         self.base_url = (
             "https://conectahub-internal.sacavalcante.com.br"
@@ -54,6 +59,52 @@ class CupomRepository:
             timeout=10
         )
 
+=======
+    def buscar_cupom(self, document):
+        """
+        GET
+        Busca um cupom de isenção de estacionamento
+        pelo documento do cliente.
+        """
+
+        url = f"{self.base_url}/buscar-cupom"
+
+        response = requests.get(
+            url,
+            params={
+                "document": document
+            },
+            timeout=10
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    def atualizar_cupom_utilizado(
+        self,
+        redeem_coupon_id,
+        user_id
+    ):
+        """
+        PATCH
+        Marca o cupom como utilizado.
+        """
+
+        url = f"{self.base_url}/marca-cupomusado"
+
+        payload = {
+            "redeem_coupon_id": redeem_coupon_id,
+            "user_id": user_id
+        }
+
+        response = requests.patch(
+            url,
+            json=payload,
+            timeout=10
+        )
+
+>>>>>>> 6ee85cc689a1447fefb88caa57dd85ed600fa2bf
         response.raise_for_status()
 
         return response.json()
