@@ -10,7 +10,7 @@ class AutenticacaoService:
         base_url
         or os.getenv(
             "CONECTA_HUB_URL",
-            "https://conectahub-internal.sacavalcante.com.br/api/v1",
+            "https://conectahub.sacavalcante.com.br/api/v1",
         ).rstrip("/")
     )
 
