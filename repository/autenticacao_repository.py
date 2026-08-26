@@ -1,8 +1,3 @@
-import psycopg2.extras
-
-from backend.database import conectar
-
-
 class AutenticacaoRepository:
 
     def buscar_usuario(self, usuario):
