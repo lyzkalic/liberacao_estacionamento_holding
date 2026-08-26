@@ -1,31 +1,30 @@
+import os
+import requests
+
+
 class AutenticacaoRepository:
 
-    def buscar_usuario(self, usuario):
+  def __init__(self, base_url: str = None):
+    self.base_url = (
+        base_url
+        or os.getenv(
+            "CONECTA_HUB_URL",
+            "https://conectahub-internal.sacavalcante.com.br/api/v1",
+        ).rstrip("/")
+    )
 
-        conexao = conectar()
+  def buscar_usuario(self, usuario: str) -> dict:
+    """GET: Busca informações do usuário pelo username na nova API."""
+    url = f"{self.base_url}/usuarios"
 
-        try:
+    try:
+      response = requests.get(url, params={"usuario": usuario}, timeout=10)
 
-            cursor = conexao.cursor(
-                cursor_factory=psycopg2.extras.RealDictCursor
-            )
+      if response.status_code == 200:
+        # Retorna o dicionário com os dados do usuário (id, perfil, ativo, etc.)
+        return response.json()
 
-            sql = """
-                SELECT
-                    id,
-                    usuario,
-                    senha_hash,
-                    perfil,
-                    ativo
-                FROM autenticacao_estacionamento
-                WHERE usuario = %s;
-            """
+      return None
 
-            cursor.execute(sql, (usuario,))
-
-            return cursor.fetchone()
-
-        finally:
-
-            cursor.close()
-            conexao.close()
+    except requests.exceptions.RequestException:
+      return None
