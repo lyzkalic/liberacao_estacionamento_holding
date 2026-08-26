@@ -10,12 +10,12 @@ class AutenticacaoService:
         base_url
         or os.getenv(
             "CONECTA_HUB_URL",
-            "https://conectahub-internal.sacavalcante.com.br/api/v1/liberação-estacionamento",
+            "https://conectahub-internal.sacavalcante.com.br/api/v1",
         ).rstrip("/")
     )
 
   def autenticar(self, usuario: str, senha: str) -> dict:
-    url = f"{self.base_url}/login"
+    url = f"{self.base_url}/liberação-estacionamento/login"
 
     # Envia o usuário e senha no corpo da requisição POST
     payload = {"usuario": usuario, "senha": senha}
