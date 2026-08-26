@@ -1,8 +1,7 @@
 import requests
 
 class CupomRepository:
-
-CUPOM_ID = "150e6802-54e3-49a5-b2eb-a1357327e10c"
+    CUPOM_ID = "150e6802-54e3-49a5-b2eb-a1357327e10c"
 
     def __init__(self):
         self.base_url = (
