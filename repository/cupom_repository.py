@@ -5,7 +5,7 @@ class CupomRepository:
 
     def __init__(self):
         self.base_url = (
-            "https://conectahub-internal.sacavalcante.com.br"
+            "https://conectahub.sacavalcante.com.br"
             "/api/v1/liberação-de-estacionamento"
         )
 
