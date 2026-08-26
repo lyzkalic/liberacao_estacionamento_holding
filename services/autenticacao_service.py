@@ -15,7 +15,7 @@ class AutenticacaoService:
     )
 
   def autenticar(self, usuario: str, senha: str) -> dict:
-    url = f"{self.base_url}/liberação-estacionamento/login"
+    url = f"{self.base_url}/liberação-de-estacionamento/login"
 
     # Envia o usuário e senha no corpo da requisição POST
     payload = {"usuario": usuario, "senha": senha}
