@@ -1,65 +1,53 @@
-import logging
-
-import bcrypt
-
-from repository.autenticacao_repository import AutenticacaoRepository
-
-logger = logging.getLogger(__name__)
+import os
+import requests
 
 
 class AutenticacaoService:
 
-    def __init__(self):
+  def __init__(self, base_url: str = None):
+    self.base_url = (
+        base_url
+        or os.getenv(
+            "CONECTA_HUB_URL",
+            "https://conectahub-internal.sacavalcante.com.br/api/v1",
+        ).rstrip("/")
+    )
 
-        self.repository = AutenticacaoRepository()
+  def autenticar(self, usuario: str, senha: str) -> dict:
+    url = f"{self.base_url}/auth/login"
 
-    def autenticar(self, usuario, senha):
+    # Envia o usuário e senha no corpo da requisição POST
+    payload = {"usuario": usuario, "senha": senha}
 
-        login = usuario.split("@")[0].strip().lower() if "@" in usuario else usuario.strip().lower()
+    try:
+      response = requests.post(
+          url, json=payload, headers={"Content-Type": "application/json"}, timeout=10
+      )
 
-        usuario_encontrado = self.repository.buscar_usuario(login)
-
-        if not usuario_encontrado:
-
-            logger.warning("Tentativa de login com usuário inexistente: %s", usuario)
-
-            return {
-                "sucesso": False,
-                "mensagem": "Usuário ou senha inválidos"
-            }
-
-        if not usuario_encontrado["ativo"]:
-
-            logger.warning("Tentativa de login em usuário inativo: %s", usuario)
-
-            return {
-                "sucesso": False,
-                "mensagem": "Usuário inativo."
-            }
-
-        senha_valida = bcrypt.checkpw(
-            senha.encode("utf-8"),
-            usuario_encontrado["senha_hash"].encode("utf-8")
-        )
-
-        if not senha_valida:
-
-            logger.warning("Senha inválida para o usuário %s", usuario)
-
-            return {
-                "sucesso": False,
-                "mensagem": "Usuário ou senha inválidos"
-            }
-
-        logger.info(
-            "Login realizado: usuário %s (perfil %s)",
-            usuario_encontrado["usuario"],
-            usuario_encontrado["perfil"]
-        )
-
+      if response.status_code == 200:
+        dados = response.json()
         return {
             "sucesso": True,
-            "usuario_id": usuario_encontrado["id"],
-            "usuario": usuario_encontrado["usuario"],
-            "perfil": usuario_encontrado["perfil"]
+            "usuario_id": dados.get("usuario_id"),
+            "usuario": dados.get("usuario"),
+            "perfil": dados.get("perfil"),
+            "token": dados.get("token"),
         }
+
+      if response.status_code in (400, 401):
+        erro = response.json()
+        return {
+            "sucesso": False,
+            "mensagem": erro.get("mensagem", "Usuário ou senha inválidos."),
+        }
+
+      return {
+          "sucesso": False,
+          "mensagem": f"Erro na API de autenticação ({response.status_code}).",
+      }
+
+    except requests.exceptions.RequestException as e:
+      return {
+          "sucesso": False,
+          "mensagem": "Falha de conexão com o servidor de autenticação.",
+      }
