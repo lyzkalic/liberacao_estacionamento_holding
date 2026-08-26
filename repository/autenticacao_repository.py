@@ -15,7 +15,7 @@ class AutenticacaoRepository:
 
   def buscar_usuario(self, usuario: str) -> dict:
     """GET: Busca informações do usuário pelo username na nova API."""
-    url = f"{self.base_url}/usuarios"
+    url = f"{self.base_url}/liberação-de-estacionamento/usuarios"
 
     try:
       response = requests.get(url, params={"usuario": usuario}, timeout=10)
