@@ -1,17 +1,20 @@
 from typing import Optional
-
 from pydantic import BaseModel
+
 
 class BuscarCpfRequest(BaseModel):
     cpf: str
+
 
 class LiberarTicketRequest(BaseModel):
     cpf: str
     numero_ticket: str
 
+
 class LoginRequest(BaseModel):
     usuario: str
     senha: str
+
 
 class AuditoriaFiltroRequest(BaseModel):
     cpf: Optional[str] = None

@@ -1,82 +1,44 @@
+import os
 import requests
+
 
 class CupomRepository:
 
-    CUPOM_ID = "150e6802-54e3-49a5-b2eb-a1357327e10c"
-
-    def __init__(self):
+    def __init__(self, base_url: str = None, token: str = None):
         self.base_url = (
-            "https://conectahub-internal.sacavalcante.com.br"
-            "/api/v1/liberação-de-estacionamento"
+            base_url
+            or os.getenv(
+                "CONECTA_HUB_URL",
+                "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
+            ).rstrip("/")
         )
+        self.headers = {"Content-Type": "application/json"}
+        if token:
+            self.headers["Authorization"] = f"Bearer {token}"
 
-    def __init__(self):
-        self.base_url = (
-            "https://conectahub-internal.sacavalcante.com.br"
-            "/api/v1/liberação-de-estacionamento"
-        )
-
-    def buscar_cupom(self, document):
-        """
-        GET
-        Busca um cupom de isenção de estacionamento
-        pelo documento do cliente.
-        """
-
-        url = f"{self.base_url}/buscar-cupom"
-
+    def buscar_cupom(self, cpf: str):
+        url = f"{self.base_url}/cupons/buscar"
         response = requests.get(
-            url,
-            params={
-                "document": document
-            },
-            timeout=10
+            url, params={"cpf": cpf}, headers=self.headers, timeout=10
         )
+
+        if response.status_code == 404:
+            return None
 
         response.raise_for_status()
-
         return response.json()
 
-    def atualizar_cupom_utilizado(
-        self,
-        redeem_coupon_id,
-        user_id
-    ):
-        """
-        PATCH
-        Marca o cupom como utilizado.
-        """
-
-        url = f"{self.base_url}/marca-cupomusado"
-
-        payload = {
-            "redeem_coupon_id": redeem_coupon_id,
-            "user_id": user_id
-        }
-
-        response = requests.patch(
-            url,
-            json=payload,
-            timeout=10
-        )
-
+    def obter_proximo_id_transacao() -> int:
+        url = f"{self.base_url}/transacao/proximo-id"
+        response = requests.get(url, headers=self.headers, timeout=10)
         response.raise_for_status()
+        return response.json().get("id_transacao")
 
-        return response.json()
-
-    def obter_proximo_id_transacao(self):
-        """
-        GET
-        Obtém o próximo ID de transação.
-        """
-
-        url = f"{self.base_url}/obter-próximo-id-transação"
-
-        response = requests.get(
-            url,
-            timeout=10
+    def atualizar_cupom_utilizado(self, redeem_coupon_id: int, user_id: int):
+        url = f"{self.base_url}/cupons/utilizar"
+        payload = {"redeem_coupon_id": redeem_coupon_id, "user_id": user_id}
+        response = requests.post(
+            url, json=payload, headers=self.headers, timeout=10
         )
-
         response.raise_for_status()
-
         return response.json()
