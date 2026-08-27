@@ -5,7 +5,6 @@ from backend.config import Config
 
 
 def configurar_logging():
-
     os.makedirs("logs", exist_ok=True)
 
     nivel = logging.DEBUG if Config.DEBUG else logging.INFO
@@ -15,7 +14,7 @@ def configurar_logging():
         format="%(asctime)s | %(levelname)s | %(name)s:%(funcName)s:%(lineno)d | %(message)s",
         handlers=[
             logging.StreamHandler(),
-            logging.FileHandler("logs/app.log", encoding="utf-8")
+            logging.FileHandler("logs/app.log", encoding="utf-8"),
         ],
-        force=True
+        force=True,
     )

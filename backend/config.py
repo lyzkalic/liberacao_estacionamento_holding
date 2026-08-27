@@ -1,20 +1,14 @@
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
-class Config:
-    # PostgreSQL
-    DB_HOST = os.getenv("DB_HOST")
-    DB_PORT = int(os.getenv("DB_PORT", 5432))
-    DB_NAME = os.getenv("DB_NAME")
-    DB_USER = os.getenv("DB_USER")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-    # ConectaHub
+class Config:
+    # ConectaHub API
     CONECTAHUB_API_URL = os.getenv("CONECTA_HUB_URL")
 
-    # WPS
+    # Integracao WPS
     WPS_URL = os.getenv("WPS_URL")
     WPS_SECRET_KEY = os.getenv("WPS_SECRET_KEY")
     WPS_API_KEY_ID = os.getenv("WPS_API_KEY_ID")
@@ -25,13 +19,11 @@ class Config:
     WPS_PORTADOR = os.getenv("WPS_PORTADOR")
     WPS_CARTAO = os.getenv("WPS_CARTAO")
     WPS_VALIDADE = os.getenv("WPS_VALIDADE")
-    WPS_ID_PROMOCAO = int(os.getenv("WPS_ID_PROMOCAO"))
-    WPS_ID_GARAGEM = int(os.getenv("WPS_ID_GARAGEM"))
+    WPS_ID_PROMOCAO = int(os.getenv("WPS_ID_PROMOCAO", 0))
+    WPS_ID_GARAGEM = int(os.getenv("WPS_ID_GARAGEM", 0))
 
-    # SESSION
+    # Sessao
     SESSION_SECRET = os.getenv("SESSION_SECRET")
 
-    # LOG / AMBIENTE
+    # Ambiente / Log
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-
-

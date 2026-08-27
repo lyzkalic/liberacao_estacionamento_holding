@@ -9,12 +9,12 @@ from repository.auditoria_repository import AuditoriaRepository
 from services.autenticacao_service import AutenticacaoService
 
 logger = logging.getLogger(__name__)
+
 router = APIRouter()
 templates = Jinja2Templates(directory="frontend/pages")
 service = AutenticacaoService()
 
 
-# Tela de login
 @router.get("/login", response_class=HTMLResponse)
 async def tela_login(request: Request):
     return templates.TemplateResponse(
@@ -23,11 +23,9 @@ async def tela_login(request: Request):
     )
 
 
-# Login
 @router.post("/login")
 async def login(request: Request, dados: LoginRequest):
     try:
-        # O service.autenticar fará uma chamada HTTP POST para a nova API de autenticação
         resultado = service.autenticar(dados.usuario, dados.senha)
 
         if not resultado.get("sucesso"):
@@ -36,16 +34,13 @@ async def login(request: Request, dados: LoginRequest):
                 "mensagem": resultado.get("mensagem", "Credenciais inválidas.")
             }
 
-        # Armazena os dados do usuário na sessão
         request.session["usuario_id"] = resultado["usuario_id"]
         request.session["usuario"] = resultado["usuario"]
         request.session["perfil"] = resultado["perfil"]
 
-        # Armazena o token retornado pela nova API para usar nas chamadas das páginas protegidas
-        if "token" in resultado:
+        if "token" in resultado and resultado["token"]:
             request.session["token"] = resultado["token"]
 
-        # Registra auditoria enviando POST para a nova API via AuditoriaRepository
         try:
             token = request.session.get("token")
             AuditoriaRepository(token=token).registrar(
@@ -60,7 +55,6 @@ async def login(request: Request, dados: LoginRequest):
                 id_garagem=None
             )
         except Exception as audit_err:
-            # Evita que uma falha ao gravar a auditoria na API externa interrompa a sessão de login
             logger.error("Erro ao registrar auditoria via HTTP: %s", audit_err)
 
         return {
@@ -79,11 +73,8 @@ async def login(request: Request, dados: LoginRequest):
         raise
 
 
-# Logout
 @router.get("/logout")
 async def logout(request: Request):
     logger.info("Logout: usuário %s", request.session.get("usuario"))
-
     request.session.clear()
-
     return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
