@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, StreamingResponse
@@ -12,33 +13,27 @@ from services.auditoria_service import AuditoriaService
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-
 templates = Jinja2Templates(directory="frontend/pages")
-
 service = AuditoriaService()
 
 
-# Tela de auditoria
 @router.get("/auditoria", response_class=HTMLResponse)
 async def tela_auditoria(request: Request, usuario_logado=Depends(exigir_admin)):
-
     try:
-
         return templates.TemplateResponse(
             request=request,
             name="auditoria.html"
         )
-
     except Exception:
-
         logger.exception("Erro ao renderizar a tela de auditoria")
         raise
 
 
-# Pesquisar histórico
 @router.post("/auditoria/pesquisar")
-async def pesquisar_auditoria(filtros: AuditoriaFiltroRequest, usuario_logado=Depends(exigir_admin)):
-
+async def pesquisar_auditoria(
+    filtros: AuditoriaFiltroRequest,
+    usuario_logado=Depends(exigir_admin)
+):
     registros = service.listar_historico(
         cpf=filtros.cpf,
         usuario=filtros.usuario,
@@ -53,19 +48,16 @@ async def pesquisar_auditoria(filtros: AuditoriaFiltroRequest, usuario_logado=De
     }
 
 
-# Exportar Excel
 @router.get("/auditoria/exportar")
 async def exportar_auditoria(
     usuario_logado=Depends(exigir_admin),
-    cpf: str = None,
-    usuario: str = None,
-    status: str = None,
-    data_inicial: str = None,
-    data_final: str = None
+    cpf: Optional[str] = None,
+    usuario: Optional[str] = None,
+    status: Optional[str] = None,
+    data_inicial: Optional[str] = None,
+    data_final: Optional[str] = None
 ):
-
     try:
-
         buffer = service.exportar_historico(
             cpf=cpf,
             usuario=usuario,
@@ -83,6 +75,5 @@ async def exportar_auditoria(
         )
 
     except Exception:
-
         logger.exception("Erro ao exportar a auditoria para Excel")
         raise
