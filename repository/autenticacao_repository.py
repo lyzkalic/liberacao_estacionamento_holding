@@ -1,18 +1,28 @@
+import os
 import requests
+
 
 class AutenticacaoRepository:
 
-    def buscar_usuario(self, usuario):
+    def __init__(self, base_url: str = None):
+        self.base_url = (
+            base_url
+            or os.getenv(
+                "CONECTA_HUB_URL",
+                "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
+            ).rstrip("/")
+        )
+        self.headers = {"Content-Type": "application/json"}
+
+    def buscar_usuario(self, usuario: str):
+        url = f"{self.base_url}/busca-usuario"
 
         response = requests.get(
-            "https://conectahub-internal.sacavalcante.com.br/api/v1/liberação-de-estacionamento/busca-usuário",
-            params={"usuario":usuario},
-            timeout=10
+            url, params={"usuario": usuario}, headers=self.headers, timeout=10
         )
 
-        if resoponse.status_code == 404:
+        if response.status_code == 404:
             return None
 
-            response.raise_for_status()
-
-            return response.json()
+        response.raise_for_status()
+        return response.json()
