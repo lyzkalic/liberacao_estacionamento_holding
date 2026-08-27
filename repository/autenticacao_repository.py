@@ -1,36 +1,18 @@
-import psycopg2.extras
-
-from backend.database import conectar
-
+import requests
 
 class AutenticacaoRepository:
 
     def buscar_usuario(self, usuario):
 
-        conexao = conectar()
+        response = requests.get(
+            "https://conectahub-internal.sacavalcante.com.br/api/v1/liberação-de-estacionamento/busca-usuário",
+            params={"usuario":usuario},
+            timeout=10
+        )
 
-        try:
+        if resoponse.status_code == 404:
+            return None
 
-            cursor = conexao.cursor(
-                cursor_factory=psycopg2.extras.RealDictCursor
-            )
+            response.raise_for_status()
 
-            sql = """
-                SELECT
-                    id,
-                    usuario,
-                    senha_hash,
-                    perfil,
-                    ativo
-                FROM autenticacao_estacionamento
-                WHERE usuario = %s;
-            """
-
-            cursor.execute(sql, (usuario,))
-
-            return cursor.fetchone()
-
-        finally:
-
-            cursor.close()
-            conexao.close()
+            return response.json()

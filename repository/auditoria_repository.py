@@ -1,114 +1,96 @@
-import psycopg2.extras
-
-from backend.database import conectar
+import os
+import requests
 
 
 class AuditoriaRepository:
 
-    def registrar(self, usuario_id, tipo_acao, cpf_cliente, numero_ticket, id_transacao, cupom_id, resultado, mensagem, id_garagem=None):
+  def __init__(self, base_url: str = None, token: str = None):
+    # Configura a URL da API (pode vir de variável de ambiente)
+    self.base_url = (
+        base_url
+        or os.getenv("CONECTA_HUB_URL", "https://conectahub.sacavalcante.com.br/api/v1/liberação-de-estacionamento").rstrip("/")
+    )
+    self.headers = {"Content-Type": "application/json"}
+    if token:
+      self.headers["Authorization"] = f"Bearer {token}"
 
-        conexao = conectar()
+  def registrar(
+      self,
+      usuario_id,
+      tipo_acao,
+      cpf_cliente,
+      numero_ticket,
+      id_transacao,
+      cupom_id,
+      resultado,
+      mensagem,
+      id_garagem=None,
+  ):
+    url = f"{self.base_url}/historico-liberacao" # Definir endpoint no conectahub
 
-        try:
+    # Converte os dados que iriam no INSERT em um dicionário (JSON Body)
+    payload = {
+        "usuario_id": usuario_id,
+        "tipo_acao": tipo_acao,
+        "cpf_cliente": cpf_cliente,
+        "numero_ticket": numero_ticket,
+        "id_transacao": id_transacao,
+        "cupom_id": cupom_id,
+        "resultado": resultado,
+        "mensagem": mensagem,
+        "id_garagem": id_garagem,
+    }
 
-            cursor = conexao.cursor()
+    response = requests.post(
+        url, json=payload, headers=self.headers, timeout=10
+    )
+    response.raise_for_status()
 
-            sql = """
-                INSERT INTO historico_liberacao_estacionamento
-                    (usuario_id, tipo_acao, cpf_cliente, numero_ticket, id_transacao, cupom_id, resultado, mensagem, id_garagem)
-                VALUES
-                    (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-            """
+    return response.json()
 
-            cursor.execute(
-                sql,
-                (
-                    usuario_id,
-                    tipo_acao,
-                    cpf_cliente,
-                    numero_ticket,
-                    id_transacao,
-                    cupom_id,
-                    resultado,
-                    mensagem,
-                    id_garagem
-                )
-            )
+  def listar_historico(
+      self,
+      cpf=None,
+      usuario=None,
+      status=None,
+      data_inicial=None,
+      data_final=None,
+  ):
+    url = f"{self.base_url}/historico-liberacao"
 
-            conexao.commit()
+    # Monta os Query Parameters para a consulta GET (substitui a cláusula WHERE)
+    params = {}
+    if cpf:
+      params["cpf"] = cpf
+    if usuario:
+      params["usuario"] = usuario
+    if status:
+      params["status"] = status
+    if data_inicial:
+      params["data_inicial"] = str(data_inicial)
+    if data_final:
+      params["data_final"] = str(data_final)
 
-        finally:
+    response = requests.get(
+        url, params=params, headers=self.headers, timeout=10
+    )
+    response.raise_for_status()
 
-            cursor.close()
-            conexao.close()
+    # O retornos .json() já entrega uma lista de dicionários igual ao RealDictCursor
+    return response.json()
 
-    def listar_historico(self, cpf=None, usuario=None, status=None, data_inicial=None, data_final=None):
-
-        conexao = conectar()
-
-        try:
-
-            cursor = conexao.cursor(
-                cursor_factory=psycopg2.extras.RealDictCursor
-            )
-
-            sql = """
-                SELECT
-                    h.data_liberacao,
-                    au.usuario,
-                    au.perfil,
-                    h.tipo_acao,
-                    h.cpf_cliente,
-                    h.numero_ticket,
-                    h.id_transacao,
-                    h.id_garagem,
-                    h.resultado,
-                    h.mensagem
-                FROM historico_liberacao_estacionamento h
-                LEFT JOIN autenticacao_estacionamento au
-                    ON au.id = h.usuario_id
-                WHERE 1=1
-            """
-
-            parametros = []
-
-            if cpf:
-                sql += " AND h.cpf_cliente = %s"
-                parametros.append(cpf)
-
-            if usuario:
-                sql += " AND au.usuario ILIKE %s"
-                parametros.append(f"%{usuario}%")
-
-            if status:
-                sql += " AND h.resultado ILIKE %s"
-                parametros.append(f"%{status}%")
-
-            if data_inicial:
-                sql += " AND h.data_liberacao::date >= %s"
-                parametros.append(data_inicial)
-
-            if data_final:
-                sql += " AND h.data_liberacao::date <= %s"
-                parametros.append(data_final)
-
-            sql += " ORDER BY h.data_liberacao DESC;"
-
-            cursor.execute(sql, tuple(parametros))
-
-            return cursor.fetchall()
-
-        finally:
-
-            cursor.close()
-            conexao.close()
-
-    def exportar_historico(self, cpf=None, usuario=None, status=None, data_inicial=None, data_final=None):
-
-        return self.listar_historico(
-            cpf=cpf,
-            usuario=usuario,
-            status=status,
-            data_inicial=data_inicial,
-            data_final=data_final
-        )
+  def exportar_historico(
+      self,
+      cpf=None,
+      usuario=None,
+      status=None,
+      data_inicial=None,
+      data_final=None,
+  ):
+    return self.listar_historico(
+        cpf=cpf,
+        usuario=usuario,
+        status=status,
+        data_inicial=data_inicial,
+        data_final=data_final,
+    )

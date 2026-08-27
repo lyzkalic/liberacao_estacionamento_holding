@@ -1,8 +1,5 @@
 import psycopg2
 
-from backend.config import Config
-
-
 def conectar():
 
     return psycopg2.connect(
@@ -12,4 +9,4 @@ def conectar():
         user=Config.DB_USER,
         password=Config.DB_PASSWORD,
         sslmode="require"
-    )
+    ) 

@@ -11,6 +11,9 @@ class Config:
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
 
+    # ConectaHub
+    CONECTAHUB_API_URL = os.getenv("CONECTA_HUB_URL")
+
     # WPS
     WPS_URL = os.getenv("WPS_URL")
     WPS_SECRET_KEY = os.getenv("WPS_SECRET_KEY")

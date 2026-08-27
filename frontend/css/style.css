@@ -118,11 +118,11 @@ body {
 html body.dark-mode {
     background-image: url('/assets/fundoescuro.svg') !important;
 =======
-    background-image: url('/assets/fundoclaro.png');
+    background-image: url('/assets/fundoclaro.svg');
 }
 
 html body.dark-mode {
-    background-image: url('/assets/fundoescuro.png') !important;
+    background-image: url('/assets/fundoescuro.svg') !important;
 >>>>>>> 6ee85cc689a1447fefb88caa57dd85ed600fa2bf
 }
 
