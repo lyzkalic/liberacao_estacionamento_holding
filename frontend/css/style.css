@@ -1,7 +1,7 @@
 /* ============================================================
    1. GAVETAS DE CORES (MODO CLARO - PADRÃO)
    ============================================================ */
-:root { /* definição do seletor, cria variáveis globais no nível mais alto do código, mudar a cor no root atualiza no site todo de uma vez */
+:root {
     --verde-principal: #1e302b;
     --verde-claro: #2b453e;
     --cinza-claro: #f5f7f6;
@@ -30,25 +30,25 @@
     --vidro-blur: 12px;
     --sombra: 0 20px 40px rgba(30, 48, 43, 0.1);
     --sombra-hover: 0 8px 15px rgba(30, 48, 43, 0.2);
-    --raio: 16px;  /* arredondamento das bordas */
+    --raio: 16px;
 }
 
 /* ============================================================
    2. GAVETAS DE CORES (MODO ESCURO)
    ============================================================ */
 body.dark-mode {
-    /* Cores de Texto e Leitura - Modo Escuro */
-    --texto-principal: #ffffff;                   /* Textos e resultados  */
+    /* Cores de Texto e Leitura (Modo Escuro) */
+    --texto-principal: #ffffff;             /* Textos e resultados em BRANCO */
     --texto-secundario: rgba(255, 255, 255, 0.8); /* Rótulos em tom claro */
     --texto-placeholder: rgba(255, 255, 255, 0.5);/* Exemplo em campos em tom claro */
 
-    /* Fundos e Bordas - Modo Escuro */
+    /* Fundos e Bordas (Modo Escuro) */
     --fundo-card: rgba(18, 24, 22, 0.90);
     --fundo-painel: rgba(255, 255, 255, 0.05);
     --borda-card: rgba(255, 255, 255, 0.15);
     --borda-linha: rgba(255, 255, 255, 0.2);
 
-    /* Cores das Tabelas - Modo Escuro */
+    /* Cores das Tabelas (Modo Escuro) */
     --tabela-linha-impar: rgba(255, 255, 255, 0.05);
     --tabela-linha-par: rgba(255, 255, 255, 0.1);
     --tabela-linha-hover: rgba(255, 255, 255, 0.2);
@@ -56,6 +56,8 @@ body.dark-mode {
     /* Efeitos */
     --sombra: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
+
+/* === CORREÇÃO DO FEEDBACK DA BUSCA DE CPF (MODO ESCURO) === */
 
 /* Container de Sucesso (Caixa Verde) */
 body.dark-mode .feedback-sucesso {
@@ -111,19 +113,11 @@ body {
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     transition: background-image 0.5s ease-in-out;
-<<<<<<< HEAD
     background-image: url('/assets/fundoclaro.svg');
 }
 
 html body.dark-mode {
     background-image: url('/assets/fundoescuro.svg') !important;
-=======
-    background-image: url('/assets/fundoclaro.svg');
-}
-
-html body.dark-mode {
-    background-image: url('/assets/fundoescuro.svg') !important;
->>>>>>> 6ee85cc689a1447fefb88caa57dd85ed600fa2bf
 }
 
 /* === Botão de Trocar Tema (Switch) === */
@@ -180,19 +174,11 @@ body.dark-mode .switch-thumb {
 
 .page-logo img {
     display: block;
-<<<<<<< HEAD
-    width: 250px;      
-    max-width: 100vw;
+    width: 350px;      
+    max-width: 20vw;
     height: auto;
     filter: drop-shadow(0 6px 14px rgba(30,48,43,.25));
-    margin-bottom: -20px;
-=======
-    width: 800px;      
-    max-width: 150vw;
-    height: auto;
-    filter: drop-shadow(0 6px 14px rgba(30,48,43,.25));
-    margin-bottom: -150px;
->>>>>>> 6ee85cc689a1447fefb88caa57dd85ed600fa2bf
+    margin-bottom: 10px;
 }
 
 .page-logo-corner {
