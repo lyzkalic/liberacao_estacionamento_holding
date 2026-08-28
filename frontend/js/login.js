@@ -48,4 +48,32 @@ if (!formulario || !campoUsuario || !campoSenha) {
 
     });
 
+    formulario.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    try {
+        const resposta = await fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                usuario: campoUsuario.value,
+                senha: campoSenha.value
+            })
+        });
+
+        const dados = await resposta.json();
+
+        if (dados.sucesso) {
+            window.location.href = "/";
+        } else {
+            exibirErro(dados.mensagem || dados.detail || "Erro ao efetuar login.");
+        }
+    } catch (erro) {
+        console.error("Erro na requisição:", erro);
+        exibirErro("Serviço indisponível no momento.");
+    }
+});
+
 }
