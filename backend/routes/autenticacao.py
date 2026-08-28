@@ -29,14 +29,14 @@ async def exibir_login():
 
 
 @router.post("/login")
-def login(dados: LoginSchema):
+def login(dados: LoginSchema, request: Request):
     resultado = auth_service.autenticar(dados.usuario, dados.senha)
 
     if not resultado.get("sucesso"):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=resultado.get("mensagem", "Usuário ou senha inválidos."),
-        )
+        return{
+            "sucesso": False,
+            "mensagem": resultado.get("mensagem", "Usuário ou senha inválidos.")
+        }
 
         request.session["usuario"] = {
         "id": resultado.get("usuario_id"),
