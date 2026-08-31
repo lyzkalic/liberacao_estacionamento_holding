@@ -1,6 +1,7 @@
-import os
 import logging
-from fastapi import APIRouter, HTTPException, status
+import os
+
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
@@ -8,7 +9,6 @@ from services.autenticacao_service import AutenticacaoService
 
 logger = logging.getLogger(__name__)
 
-# Certifique-se de NÃO passar prefix="/login" aqui
 router = APIRouter(tags=["Autenticação"])
 auth_service = AutenticacaoService()
 
@@ -24,7 +24,7 @@ class LoginSchema(BaseModel):
 @router.get("/login")
 async def exibir_login():
     if not os.path.exists(LOGIN_HTML_PATH):
-        raise HTTPException(status_code=404, detail="Arquivo frontend/login.html não encontrado.")
+        raise HTTPException(status_code=404, detail="Arquivo frontend/pages/login.html não encontrado.")
     return FileResponse(LOGIN_HTML_PATH)
 
 
@@ -33,12 +33,13 @@ def login(dados: LoginSchema, request: Request):
     resultado = auth_service.autenticar(dados.usuario, dados.senha)
 
     if not resultado.get("sucesso"):
-        return{
+        return {
             "sucesso": False,
             "mensagem": resultado.get("mensagem", "Usuário ou senha inválidos.")
         }
 
-        request.session["usuario"] = {
+    # Grava na sessão apenas se o login for bem-sucedido
+    request.session["usuario"] = {
         "id": resultado.get("usuario_id"),
         "usuario": resultado.get("usuario"),
         "perfil": resultado.get("perfil"),

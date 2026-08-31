@@ -1,10 +1,11 @@
 import os
+
 import requests
 
 
 class AutenticacaoRepository:
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str | None = None):
         self.base_url = (
             base_url
             or os.getenv(
@@ -17,7 +18,7 @@ class AutenticacaoRepository:
     def buscar_usuario(self, usuario: str):
         url = f"{self.base_url}/busca-usuario"
 
-        response = requests.get(
+        response = requests.post(
             url, params={"usuario": usuario}, headers=self.headers, timeout=10
         )
 

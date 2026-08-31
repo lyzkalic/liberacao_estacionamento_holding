@@ -2,6 +2,7 @@
 
 import logging
 import os
+
 import requests
 from dotenv import load_dotenv
 
@@ -29,12 +30,23 @@ class ConectaHubClient:
         self._auth = (user or _USER, password if password is not None else _PASSWORD)
         self._session = requests.Session()
 
-    def _request(self, method: str, rota: str, **kwargs) -> dict:
-        url = f"{self._base_url}/api/v1/liberacao-estacionamento/{rota}"
+    def _request(self, method: str, rota: str, **kwargs) -> dict | None:
+        # Remove barras extras para evitar rotas como /busca-usuario/
+        endpoint_limpo = rota.strip("/")
+        url = f"{self._base_url}/api/v1/liberacao-estacionamento/{endpoint_limpo}"
+
         try:
             resp = self._session.request(
                 method, url, auth=self._auth, timeout=30, **kwargs
             )
+
+            if resp.status_code == 404:
+                _log.warning("Usuário ou rota não encontrada (404) em: %s", url)
+                return None
+
+            if not resp.ok:
+                _log.error("Erro da API ConectaHub (%s): %s", resp.status_code, resp.text)
+
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:
@@ -45,13 +57,13 @@ class ConectaHubClient:
         params = {"document": document}
         if coupon_id is not None:
             params["coupon_id"] = coupon_id
-        return self._request("GET", "buscar-cupom", params=params)
+        return self._request("GET", "buscar-cupom/", params=params)
 
-    def buscar_usuario(self, usuario: str) -> dict:
-        return self._request("GET", "busca-usuario", params={"usuario": usuario})
+    def buscar_usuario(self, usuario: str) -> dict | None:
+        return self._request("POST", "busca-usuario", json={"usuario": usuario.strip()})
 
     def marcar_cupom_usado(self, payload: dict) -> dict:
-        return self._request("PATCH", "marca-cupomusado", json=payload)
+        return self._request("PATCH", "marca-cupomusado/", json=payload)
 
     def obter_proximo_id_transacao(self) -> dict:
-        return self._request("GET", "obter-proximo-id-transacao")
+        return self._request("GET", "obter-proximo-id-transacao/")
