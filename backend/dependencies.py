@@ -9,20 +9,18 @@ class AcessoNegadoException(Exception):
     pass
 
 
-def exigir_login(request: Request):
-    usuario_id = request.session.get("usuario_id")
+def exigir_login(request: Request) -> dict:
+    # Obtém o dicionário salvo na chave 'usuario'
+    usuario = request.session.get("usuario")
 
-    if not usuario_id:
+    # Se a sessão não existir ou não tiver usuario_id, lança exceção
+    if not usuario or not usuario.get("usuario_id"):
         raise NaoAutenticadoException()
 
-    return {
-        "usuario_id": usuario_id,
-        "usuario": request.session.get("usuario"),
-        "perfil": request.session.get("perfil"),
-    }
+    return usuario
 
 
-def exigir_admin(usuario=Depends(exigir_login)):
+def exigir_admin(usuario: dict = Depends(exigir_login)) -> dict:
     if usuario.get("perfil") != "ADMIN":
         raise AcessoNegadoException()
 

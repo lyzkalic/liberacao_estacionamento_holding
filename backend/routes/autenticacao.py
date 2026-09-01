@@ -41,6 +41,7 @@ def login(dados: LoginSchema, request: Request):
     # Grava na sessão apenas se o login for bem-sucedido
     request.session["usuario"] = {
         "id": resultado.get("usuario_id"),
+        "usuario_id": resultado.get("usuario_id"),
         "usuario": resultado.get("usuario"),
         "perfil": resultado.get("perfil"),
     }

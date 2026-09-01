@@ -21,10 +21,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Middleware de Sessão (com fallback para chave secreta)
+# Middleware de Sessão (com suporte a ambiente local HTTP)
 secret_key = getattr(Config, "SESSION_SECRET", None) or "chave-secreta-temporaria-dev"
-app.add_middleware(SessionMiddleware, secret_key=secret_key)
-
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=secret_key,
+    same_site="lax",
+    https_only=False  # Permite que o cookie de sessão seja salvo sem HTTPS durante o desenvolvimento
+)
 
 # --- TRATAMENTO DE EXCEÇÕES ---
 
@@ -72,6 +76,6 @@ app.include_router(auditoria_router)
 @app.get("/")
 async def home(request: Request):
     if not request.session.get("usuario"):
-        return RedirectResponse("/login/", status_code=303)
+        return RedirectResponse("/login", status_code=303)
 
-    return RedirectResponse("/buscar/", status_code=303)
+    return RedirectResponse("/buscar", status_code=303)
