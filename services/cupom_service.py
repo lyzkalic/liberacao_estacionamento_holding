@@ -19,6 +19,13 @@ class CupomService:
     def log_transacao(self, correlation_id, mensagem, *args):
         logger.info("[TRANSACAO:%s] " + mensagem, correlation_id, *args)
 
+    def _registrar_auditoria_segura(self, **kwargs):
+        """Método auxiliar para garantir que falhas na auditoria não paralisem o fluxo principal."""
+        try:
+            self.auditoria_repository.registrar(**kwargs)
+        except (AttributeError, ConnectionError, OSError, TypeError, ValueError):
+            logger.exception("Erro não tratado durante o registro de auditoria")
+
     def buscar_cupom(self, usuario_id, cpf):
         logger.info("Consultando CPF %s", cpf)
 
@@ -37,7 +44,7 @@ class CupomService:
 
         logger.info("Registrando auditoria da consulta de CPF %s", cpf)
 
-        self.auditoria_repository.registrar(
+        self._registrar_auditoria_segura(
             usuario_id=usuario_id,
             tipo_acao="BUSCA_CPF",
             cpf_cliente=cpf,
@@ -62,7 +69,7 @@ class CupomService:
             mensagem = "Ticket não encontrado ou já utilizado."
             logger.info("Cupom inválido para CPF %s: %s", cpf, mensagem)
 
-            self.auditoria_repository.registrar(
+            self._registrar_auditoria_segura(
                 usuario_id=usuario_id,
                 tipo_acao="LIBERACAO_TICKET",
                 cpf_cliente=cpf,
@@ -115,7 +122,7 @@ class CupomService:
             numero_ticket,
         )
 
-        self.auditoria_repository.registrar(
+        self._registrar_auditoria_segura(
             usuario_id=usuario_id,
             tipo_acao="LIBERACAO_TICKET",
             cpf_cliente=cpf,

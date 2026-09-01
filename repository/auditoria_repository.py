@@ -1,20 +1,36 @@
+import logging
 import os
+
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+logger = logging.getLogger(__name__)
 
 
 class AuditoriaRepository:
 
-    def __init__(self, base_url: str = None, token: str = None):
-        self.base_url = (
-            base_url
-            or os.getenv(
-                "CONECTA_HUB_URL",
-                "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
-            ).rstrip("/")
+    def __init__(
+        self,
+        base_url: str | None = None,
+        usuario: str | None = None,
+        senha: str | None = None,
+    ):
+        url_env = os.getenv(
+            "CONECTA_HUB_URL",
+            "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
         )
+
+        if not url_env.rstrip("/").endswith("/api/v1/liberacao-estacionamento"):
+            url_env = f"{url_env.rstrip('/')}/api/v1/liberacao-estacionamento"
+
+        self.base_url = (base_url or url_env).rstrip("/")
+
+        user = usuario or os.getenv("CONECTA_HUB_USER", "psqladmin")
+        password = senha or os.getenv("CONECTA_HUB_PASSWORD", "")
+
+        self.auth = (user, password)
         self.headers = {"Content-Type": "application/json"}
-        if token:
-            self.headers["Authorization"] = f"Bearer {token}"
 
     def registrar(
         self,
@@ -42,20 +58,23 @@ class AuditoriaRepository:
             "id_garagem": id_garagem,
         }
 
-        response = requests.post(
-            url, json=payload, headers=self.headers, timeout=10
-        )
-        response.raise_for_status()
-
-        return response.json()
+        try:
+            response = requests.post(
+                url, json=payload, headers=self.headers, auth=self.auth, timeout=10
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as err:
+            logger.error("Falha ao registrar auditoria no ConectaHub (%s): %s", url, err)
+            return None
 
     def listar_historico(
         self,
-        cpf=None,
-        usuario=None,
-        status=None,
-        data_inicial=None,
-        data_final=None,
+        cpf: str | None = None,
+        usuario: str | None = None,
+        status: str | None = None,
+        data_inicial: str | None = None,
+        data_final: str | None = None,
     ):
         url = f"{self.base_url}/historico-liberacao"
 
@@ -71,20 +90,23 @@ class AuditoriaRepository:
         if data_final:
             params["data_final"] = str(data_final)
 
-        response = requests.get(
-            url, params=params, headers=self.headers, timeout=10
-        )
-        response.raise_for_status()
-
-        return response.json()
+        try:
+            response = requests.get(
+                url, params=params, headers=self.headers, auth=self.auth, timeout=10
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as err:
+            logger.error("Falha ao listar histórico de auditoria: %s", err)
+            return []
 
     def exportar_historico(
         self,
-        cpf=None,
-        usuario=None,
-        status=None,
-        data_inicial=None,
-        data_final=None,
+        cpf: str | None = None,
+        usuario: str | None = None,
+        status: str | None = None,
+        data_inicial: str | None = None,
+        data_final: str | None = None,
     ):
         return self.listar_historico(
             cpf=cpf,

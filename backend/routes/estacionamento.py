@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
@@ -16,7 +17,10 @@ service = CupomService()
 
 
 @router.get("/buscar", response_class=HTMLResponse)
-async def tela_buscar_cpf(request: Request, usuario=Depends(exigir_login)):
+async def tela_buscar_cpf(
+    request: Request,
+    usuario: Annotated[dict, Depends(exigir_login)]
+):
     erro = request.session.pop("erro_acesso", None)
 
     return templates.TemplateResponse(
@@ -27,7 +31,10 @@ async def tela_buscar_cpf(request: Request, usuario=Depends(exigir_login)):
 
 
 @router.get("/liberar", response_class=HTMLResponse)
-async def tela_liberar(request: Request, usuario=Depends(exigir_login)):
+async def tela_liberar(
+    request: Request,
+    usuario: Annotated[dict, Depends(exigir_login)]
+):
     return templates.TemplateResponse(
         request=request,
         name="liberar_ticket.html"
@@ -35,7 +42,10 @@ async def tela_liberar(request: Request, usuario=Depends(exigir_login)):
 
 
 @router.post("/buscar-cupom")
-async def buscar_cupom(request: BuscarCpfRequest, usuario=Depends(exigir_login)):
+async def buscar_cupom(
+    request: BuscarCpfRequest,
+    usuario: Annotated[dict, Depends(exigir_login)]
+):
     try:
         resultado = service.buscar_cupom(usuario_id=usuario["usuario_id"], cpf=request.cpf)
 
@@ -56,7 +66,10 @@ async def buscar_cupom(request: BuscarCpfRequest, usuario=Depends(exigir_login))
 
 
 @router.post("/liberar-ticket")
-async def liberar_ticket(request: LiberarTicketRequest, usuario=Depends(exigir_login)):
+async def liberar_ticket(
+    request: LiberarTicketRequest,
+    usuario: Annotated[dict, Depends(exigir_login)]
+):
     try:
         resultado = service.liberar_ticket(
             usuario_id=usuario["usuario_id"],

@@ -1,6 +1,7 @@
 import io
 import logging
 from datetime import datetime
+from typing import ClassVar
 
 import openpyxl
 
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class AuditoriaService:
 
-    COLUNAS = [
+    COLUNAS: ClassVar[list[str]] = [
         "Data/Hora",
         "Usuário",
         "Perfil",

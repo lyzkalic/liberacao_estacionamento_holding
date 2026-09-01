@@ -1,6 +1,6 @@
 import logging
-from datetime import datetime
-from typing import Optional
+from datetime import datetime, timezone
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, StreamingResponse
@@ -12,17 +12,24 @@ from services.auditoria_service import AuditoriaService
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter(tags=["Auditoria"])
 templates = Jinja2Templates(directory="frontend/pages")
 service = AuditoriaService()
 
 
 @router.get("/auditoria", response_class=HTMLResponse)
-async def tela_auditoria(request: Request, usuario_logado=Depends(exigir_admin)):
+async def tela_auditoria(
+    request: Request,
+    usuario_logado: Annotated[dict, Depends(exigir_admin)],
+):
     try:
         return templates.TemplateResponse(
             request=request,
-            name="auditoria.html"
+            name="auditoria.html",
+            context={
+                "usuario": usuario_logado,
+                "perfil": usuario_logado.get("perfil"),
+            },
         )
     except Exception:
         logger.exception("Erro ao renderizar a tela de auditoria")
@@ -32,30 +39,27 @@ async def tela_auditoria(request: Request, usuario_logado=Depends(exigir_admin))
 @router.post("/auditoria/pesquisar")
 async def pesquisar_auditoria(
     filtros: AuditoriaFiltroRequest,
-    usuario_logado=Depends(exigir_admin)
+    usuario_logado: Annotated[dict, Depends(exigir_admin)],
 ):
     registros = service.listar_historico(
         cpf=filtros.cpf,
         usuario=filtros.usuario,
         status=filtros.status,
         data_inicial=filtros.data_inicial,
-        data_final=filtros.data_final
+        data_final=filtros.data_final,
     )
 
-    return {
-        "sucesso": True,
-        "dados": registros
-    }
+    return {"sucesso": True, "dados": registros}
 
 
 @router.get("/auditoria/exportar")
 async def exportar_auditoria(
-    usuario_logado=Depends(exigir_admin),
-    cpf: Optional[str] = None,
-    usuario: Optional[str] = None,
-    status: Optional[str] = None,
-    data_inicial: Optional[str] = None,
-    data_final: Optional[str] = None
+    usuario_logado: Annotated[dict, Depends(exigir_admin)],
+    cpf: str | None = None,
+    usuario: str | None = None,
+    status: str | None = None,
+    data_inicial: str | None = None,
+    data_final: str | None = None,
 ):
     try:
         buffer = service.exportar_historico(
@@ -63,15 +67,16 @@ async def exportar_auditoria(
             usuario=usuario,
             status=status,
             data_inicial=data_inicial,
-            data_final=data_final
+            data_final=data_final,
         )
 
-        nome_arquivo = f"auditoria_estacionamento_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.xlsx"
+        data_formatada = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M")
+        nome_arquivo = f"auditoria_estacionamento_{data_formatada}.xlsx"
 
         return StreamingResponse(
             buffer,
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'}
+            headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'},
         )
 
     except Exception:
