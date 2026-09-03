@@ -18,7 +18,7 @@ class CupomRepository:
         senha: str | None = None,
     ):
         url_env = os.getenv(
-            "CONECTA_HUB_URL",
+            "CONECTAHUB_URL",
             "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
         )
 
@@ -27,15 +27,26 @@ class CupomRepository:
 
         self.base_url = (base_url or url_env).rstrip("/")
 
-        user = usuario or os.getenv("CONECTA_HUB_USER", "psqladmin")
-        password = senha or os.getenv("CONECTA_HUB_PASSWORD", "")
+        user = usuario or os.getenv("CONECTAHUB_USER", "psqladmin")
+        password = senha or os.getenv("CONECTAHUB_PASSWORD", "")
+
+        # Log temporário de depuração (mostra os tipos e tamanhos reais)
+        logger.info(
+         "AUTH CHECK -> USER: %r (len %d) | PASS: %r (len %d)",
+          user, len(user), password[:2] + "*" * (len(password) - 2) if password else "", len(password)
+        )
+        if not password:
+            logger.error(
+                "ATENÇÃO: CONECTAHUB_PASSWORD não está configurada no .env! "
+                "A requisição será enviada sem credenciais e retornará 401."
+            )
 
         self.auth = (user, password) if user and password else None
         self.headers = {"Content-Type": "application/json"}
 
     def buscar_cupom(self, cpf: str):
         cpf_limpo = re.sub(r"\D", "", str(cpf or ""))
-        url = f"{self.base_url}/cupons/buscar"
+        url = f"{self.base_url}/buscar-cupom"
 
         try:
             response = requests.get(
@@ -43,7 +54,7 @@ class CupomRepository:
                 params={"document": cpf_limpo},
                 headers=self.headers,
                 auth=self.auth,
-                timeout=10,
+                timeout=(5, 30)
             )
 
             if response.status_code == 404:
@@ -53,9 +64,7 @@ class CupomRepository:
             response.raise_for_status()
             data = response.json()
 
-            # Log para inspecionar a estrutura exata retornada pela API
-            logger.info("Resposta bruta do ConectaHub para CPF %s: %s", cpf_limpo, data)
-
+            logger.info("Resposta do ConectaHub para CPF %s: %s", cpf_limpo, data)
             return self._extrair_dados(data)
 
         except requests.RequestException as err:
@@ -66,7 +75,9 @@ class CupomRepository:
         if not data:
             return None
 
-        # Desempacota envelopes comuns da API
+        if isinstance(data, list):
+            return data[0] if len(data) > 0 else None
+
         if isinstance(data, dict):
             conteudo = (
                 data.get("dados")
@@ -75,16 +86,41 @@ class CupomRepository:
                 or data.get("resultado")
             )
             if conteudo is not None:
-                data = conteudo
-            elif data.get("sucesso") is False:
-                return None
-
-        # Se o conteúdo extraído for uma lista de cupons
-        if isinstance(data, list):
-            return data[0] if len(data) > 0 else None
-
-        # Se já for o dicionário do cupom diretamente
-        if isinstance(data, dict) and len(data) > 0:
-            return data
+                return self._extrair_dados(conteudo)
+            if len(data) > 0:
+                return data
 
         return None
+
+    def obter_proximo_id_transacao(self) -> int | None:
+        url = f"{self.base_url}/transacao/proximo-id"
+
+        try:
+            response = requests.get(
+                url, headers=self.headers, auth=self.auth, timeout=10
+            )
+            response.raise_for_status()
+            dados = response.json()
+
+            if isinstance(dados, dict):
+                return dados.get("id_transacao")
+            return dados
+
+        except requests.RequestException as err:
+            logger.error("Erro ao obter próximo ID de transação (%s): %s", url, err)
+            return None
+
+    def atualizar_cupom_utilizado(self, redeem_coupon_id: str, user_id: str):
+        url = f"{self.base_url}/cupons/utilizar"
+        payload = {"redeem_coupon_id": redeem_coupon_id, "user_id": user_id}
+
+        try:
+            response = requests.post(
+                url, json=payload, headers=self.headers, auth=self.auth, timeout=10
+            )
+            response.raise_for_status()
+            return response.json()
+
+        except requests.RequestException as err:
+            logger.error("Erro ao atualizar cupom como utilizado (%s): %s", url, err)
+            return None

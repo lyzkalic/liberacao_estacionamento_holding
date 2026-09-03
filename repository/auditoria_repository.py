@@ -17,7 +17,7 @@ class AuditoriaRepository:
         senha: str | None = None,
     ):
         url_env = os.getenv(
-            "CONECTA_HUB_URL",
+            "CONECTAHUB_URL",
             "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
         )
 
@@ -26,8 +26,8 @@ class AuditoriaRepository:
 
         self.base_url = (base_url or url_env).rstrip("/")
 
-        user = usuario or os.getenv("CONECTA_HUB_USER", "psqladmin")
-        password = senha or os.getenv("CONECTA_HUB_PASSWORD", "")
+        user = usuario or os.getenv("CONECTAHUB_USER", "psqladmin")
+        password = senha or os.getenv("CONECTAHUB_PASSWORD", "")
 
         self.auth = (user, password)
         self.headers = {"Content-Type": "application/json"}

@@ -9,8 +9,8 @@ class AutenticacaoRepository:
         self.base_url = (
             base_url
             or os.getenv(
-                "CONECTA_HUB_URL",
-                "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
+                "CONECTAHUB_URL",
+                "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento"
             ).rstrip("/")
         )
         self.headers = {"Content-Type": "application/json"}
