@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class CupomRepository:
+    CUPOM_ID = "150e6802-54e3-49a5-b2eb-a1357327e10c"
 
+<<<<<<< HEAD
     def __init__(
         self,
         base_url: str | None = None,
@@ -22,6 +24,12 @@ class CupomRepository:
         url_env = os.getenv(
             "CONECTAHUB_URL",
             "https://conectahub-internal.sacavalcante.com.br/api/v1/liberacao-estacionamento",
+=======
+    def __init__(self):
+        self.base_url = (
+            "https://conectahub.sacavalcante.com.br"
+            "/api/v1/liberação-de-estacionamento"
+>>>>>>> eda019813909102135d79eece075129c34643f43
         )
 
         if not url_env.rstrip("/").endswith("/api/v1/liberacao-estacionamento"):
