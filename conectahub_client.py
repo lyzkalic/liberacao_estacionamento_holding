@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 _BASE_URL = os.getenv(
-    "CONECTAHUB_BASE_URL", "https://conectahub-internal.sacavalcante.com.br"
+    "CONECTAHUB_URL", "https://conectahub-internal.sacavalcante.com.br"
 )
 _USER = os.getenv("CONECTAHUB_USER", "psqladmin")
 _PASSWORD = os.getenv("CONECTAHUB_PASSWORD", "")
